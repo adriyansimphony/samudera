@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengajuanizin;
+use App\Models\Admin;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -112,13 +114,29 @@ class PresensiController extends Controller
         return view('presensi.editprofile', compact('karyawan'));
     }
 
-    public function editprofileadmin(){
-        $email = Auth::guard('user')->user()->email;
-        $admin = DB::table('users')->where('email',$email)->first();
-        return view('presensi.editprofileadmin', compact('admin'));
-        // echo "Hello world";
-        // return view('presensi.editprofileadmin');
+    //edit profile jika mau cuma users saja
+    // public function editprofileadmin(){
+    //     $email = Auth::guard('user')->user()->email;
+    //     $admin = DB::table('users')->where('email',$email)->first();
+    //     return view('presensi.editprofileadmin', compact('admin'));
+    //     // echo "Hello world";
+    //     // return view('presensi.editprofileadmin');
+    // }
+    public function editprofileadmin()
+{
+    if (Auth::guard('admin')->check()) {
+        $user = Auth::guard('admin')->user(); // Ambil data dari tabel admin
+    } elseif (Auth::guard('user')->check()) {
+        $user = Auth::guard('user')->user(); // Ambil data dari tabel user
+    } else {
+        return redirect('/panel')->with(['error' => 'Anda tidak memiliki akses']);
     }
+
+    // dd($user);
+
+    return view('presensi.editprofileadmin', compact('user'));
+}
+
 
     public function updateprofile(Request $request){
         $nik = Auth::guard('karyawan')->user()->nik;
@@ -159,44 +177,85 @@ class PresensiController extends Controller
         
     }
 
-    public function updateprofileadmin(Request $request){
-        $email = Auth::guard('user')->user()->email;
-        $name = $request->name;
-        // $no_hp = $request->no_hp;
-        $password = Hash::make($request->password);
-        $admin = DB::table('users')->where('email',$email)->first();
-        // if($request->hasFile('foto')){
-        //     $foto = $nik.".".$request->file('foto')->getClientOriginalExtension();
-        // }else{
-        //     $foto = $karyawan->foto;
-        // }
-        if(empty($request->password)){
-            $data = [
-                'name' => $name,
-                'email' => $email
-                // 'foto' => $foto
-                ] ;
-            }else {
-                $data = [
-                    'name' => $name,
-                    'email' => $email,
-                    'password' => $password
-                    // 'foto' => $foto
-            ] ;
-        }
+    //edit profile kalau mau pakai user saja untuk akses
+    // public function updateprofileadmin(Request $request){
+    //     $email = Auth::guard('user')->user()->email;
+    //     $name = $request->name;
+    //     // $no_hp = $request->no_hp;
+    //     $password = Hash::make($request->password);
+    //     $admin = DB::table('users')->where('email',$email)->first();
+    //     // if($request->hasFile('foto')){
+    //     //     $foto = $nik.".".$request->file('foto')->getClientOriginalExtension();
+    //     // }else{
+    //     //     $foto = $karyawan->foto;
+    //     // }
+    //     if(empty($request->password)){
+    //         $data = [
+    //             'name' => $name,
+    //             'email' => $email
+    //             // 'foto' => $foto
+    //             ] ;
+    //         }else {
+    //             $data = [
+    //                 'name' => $name,
+    //                 'email' => $email,
+    //                 'password' => $password
+    //                 // 'foto' => $foto
+    //         ] ;
+    //     }
 
-        $update = DB::table('users')->where('email',$email)->update($data);
-        if($update){
-            // if($request->hasFile('foto')){
-            //     $folderPath = "public/uploads/karyawan/";
-            //     $request->file('foto')->storeAs($folderPath,$foto);
-            // }
-            return Redirect::back()->with(['success'=>'Data Berhasil di Update']);
-        }else {
-            return Redirect::back()->with(['error'=>'Data Gagal di Update']);
-        }
+    //     $update = DB::table('users')->where('email',$email)->update($data);
+    //     if($update){
+    //         // if($request->hasFile('foto')){
+    //         //     $folderPath = "public/uploads/karyawan/";
+    //         //     $request->file('foto')->storeAs($folderPath,$foto);
+    //         // }
+    //         return Redirect::back()->with(['success'=>'Data Berhasil di Update']);
+    //     }else {
+    //         return Redirect::back()->with(['error'=>'Data Gagal di Update']);
+    //     }
         
+    // }
+    public function updateprofileadmin(Request $request)
+{
+    if (Auth::guard('admin')->check()) {
+        $user = Admin::where('email', Auth::guard('admin')->user()->email)->first();
+        $data = [
+            'nama' => $request->name, // Sesuaikan dengan kolom di admin
+        ];
+    } elseif (Auth::guard('user')->check()) {
+        $user = User::where('email', Auth::guard('user')->user()->email)->first();
+        $data = [
+            'name' => $request->name, // Sesuaikan dengan kolom di user
+            'email' => $request->email // User boleh ubah email
+        ];
+    } else {
+        return Redirect::back()->with(['error' => 'Anda tidak memiliki akses']);
     }
+
+    if (!$user) {
+        return Redirect::back()->with(['error' => 'User tidak ditemukan']);
+    }
+
+    // Jika ada password baru, update
+    if (!empty($request->password)) {
+        $data['password'] = Hash::make($request->password);
+    }
+
+    // Gunakan model Eloquent untuk update
+    $update = $user->update($data);
+
+    if ($update) {
+        return Redirect::back()->with(['success' => 'Data Berhasil di Update']);
+    } else {
+        return Redirect::back()->with(['error' => 'Data Gagal di Update']);
+    }
+}
+
+
+
+    
+
 
     public function histori(){
         $namabulan = ["","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];

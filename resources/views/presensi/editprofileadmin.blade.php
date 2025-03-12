@@ -17,49 +17,43 @@
     </div>
 </div>
 
-
 <div class="page-body">
     <div class="container-xl">
+        @php
+        $messagesuccess = Session::get('success');
+        $messageerror = Session::get('error');
+        @endphp
+        @if(Session::get('success'))
+        <div class="alert alert-success">
+            {{ $messagesuccess }}
+        </div>
+        @endif
         <div class="row">
             <div class="col">
-                <form action="/editprofileadmin/{{ $admin->email }}/updateprofile" method="POST" enctype="multipart/form-data" >
+                <form action="/editprofileadmin/{{ $user->email }}/updateprofile" method="POST" enctype="multipart/form-data" >
                     @csrf
-                    <div class="col">
-                        <div class="form-group boxed mt-2 col-6">
-                            Nama Lengkap
-                            <div class="input-wrapper">
-                                <input type="text" class="form-control" value="{{ $admin->name }}" name="name" placeholder="Nama Lengkap" autocomplete="off">
-                            </div>
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" class="form-control mt-1" name="name" 
+                            value="{{ Auth::guard('admin')->check() ? $user->nama : $user->name }}" required>
+                    </div>
+
+                    {{-- <input type="email" class="form-control" name="email" value="{{ $user->email }}" required> --}}
+                    @if(Auth::guard('user')->check())
+                    <div class="form-group boxed mt-2 col-6">
+                        Email
+                        <div class="input-wrapper mt-1">
+                            <input type="text" class="form-control" value="{{ $user->email }}" name="email" placeholder="Email" autocomplete="off">
                         </div>
-                        <div class="form-group boxed mt-2 col-6">
-                            Email
-                            <div class="input-wrapper">
-                                <input type="text" class="form-control" value="{{ $admin->email }}" name="email" placeholder="Email" autocomplete="off">
-                            </div>
-                        </div>
-                        <div class="form-group boxed mt-2 col-6">
-                            Ganti Password
-                            <div class="input-wrapper">
-                                <input type="password" class="form-control" name="password" placeholder="Masukan password baru" autocomplete="off">
-                            </div>
-                        </div>
-                        {{-- <div class="custom-file-upload" id="fileUpload1">
-                            <input type="file" name="foto" id="fileuploadInput" accept=".png, .jpg, .jpeg">
-                            <label for="fileuploadInput">
-                                <span>
-                                    <strong>
-                                        <ion-icon name="cloud-upload-outline" role="img" class="md hydrated" aria-label="cloud upload outline"></ion-icon>
-                                        <i>Tap to Upload</i>
-                                    </strong>
-                                </span>
-                            </label>
-                        </div> --}}
-                        <div class="form-group boxed mt-2 col-6">
-                            <div class="input-wrapper">
-                                <button type="submit" class="btn btn-primary btn-block">
-                                    <ion-icon name="refresh-outline"></ion-icon>
-                                    Update
-                                </button>
+                    </div>
+                    @endif
+
+                    <div class="form-group mt-2">
+                        <label>Ganti Password</label>
+                        <input type="password" class="form-control mt-1" name="password" placeholder="Masukkan password baru">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-2">Update</button>
                             </div>
                         </div>
                     </div>

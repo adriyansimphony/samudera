@@ -30,7 +30,7 @@ Route::middleware(['guest:karyawan'])->group(function(){
     Route::post('/proseslogin', [AuthController::class, 'proseslogin']);
 });
 
-Route::middleware(['guest:user'])->group(function(){
+Route::middleware(['guest:user,admin'])->group(function(){
     Route::get('/panel', function () {
         return view('auth.loginadmin');
     })->name('loginadmin');
@@ -60,7 +60,7 @@ Route::middleware(['auth:karyawan'])->group(function (){
     Route::post('/presensi/cekpengajuanizin', [PresensiController::class, 'cekpengajuanizin']);
 });
 
-Route::middleware(['auth:user'])->group(function (){
+Route::middleware(['auth:user,admin'])->group(function (){
     // Route::get('/dashboardadmin', [DashboardController::class, 'index']);
     Route::get('/panel/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
     Route::get('/proseslogoutadmin', [AuthController::class, 'proseslogoutadmin']);

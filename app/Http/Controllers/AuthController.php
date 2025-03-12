@@ -29,10 +29,20 @@ class AuthController extends Controller
     }
 
     public function proseslogoutadmin(){
-        if(Auth::guard('user')->check()){
-            Auth::guard('user')->logout();
-            return redirect('/panel');
+
+        if (Auth::guard('admin')->check()) {
+            Auth::guard('admin')->logout();
         }
+    
+        if (Auth::guard('user')->check()) {
+            Auth::guard('user')->logout();
+        }
+    
+        return redirect('/panel');
+        // if(Auth::guard('user')->check()){
+        //     Auth::guard('user')->logout();
+        //     return redirect('/panel');
+        // }
     }
 
     public function prosesloginadmin(Request $request)
@@ -40,10 +50,38 @@ class AuthController extends Controller
         // $pass = 123;
         // echo Hash::make($pass);
 
-        if (Auth::guard('user')->attempt(['email' => $request->email, 'password' => $request->password])) {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::guard('admin')->attempt($credentials)) {
             return redirect('/panel/dashboardadmin');
-        } else {
-            return redirect('/panel')->with(['warning' => 'Email atau Password Salah']);
+        } elseif (Auth::guard('user')->attempt($credentials)) {
+            return redirect('/panel/dashboardadmin');
         }
+    
+        return redirect('/panel')->with(['warning' => 'Email atau Password Salah']);
+        // if (Auth::guard('user')->attempt(['email' => $request->email, 'password' => $request->password])) {
+        //     return redirect('/panel/dashboardadmin');
+        // } else {
+        //     return redirect('/panel')->with(['warning' => 'Email atau Password Salah']);
+        // }
     }
+
+    // public function proseslogoutroot(){
+    //     if(Auth::guard('admin')->check()){
+    //         Auth::guard('admin')->logout();
+    //         return redirect('/panel');
+    //     }
+    // }
+
+    // public function prosesloginroot(Request $request)
+    // {
+    //     // $pass = 123;
+    //     // echo Hash::make($pass);
+
+    //     if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
+    //         return redirect('/panel/dashboardadmin');
+    //     } else {
+    //         return redirect('/panel')->with(['warning' => 'Email atau Password Salah']);
+    //     }
+    // }
 }
