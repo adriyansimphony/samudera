@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\DashboardController;
@@ -108,6 +109,12 @@ Route::middleware(['auth:user,admin'])->group(function (){
     Route::get('konfigurasi/lokasikantor', [KonfigurasiController::class, 'lokasikantor']);
     Route::post('konfigurasi/updatelokasikantor', [KonfigurasiController::class, 'updatelokasikantor']);
 
+
+});
+
+Route::middleware(['auth:admin'])->group(function (){
+        //admin
+        Route::get('/admin', [AdminController::class, 'index']);
 
 });
 

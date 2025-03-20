@@ -56,7 +56,7 @@
                     @csrf
                     <div class="mb-3">
                       <label class="form-label">Email address</label>
-                      <input type="email" name="email" class="form-control" placeholder="your@email.com" autocomplete="off">
+                      <input type="email" name="email" class="form-control" placeholder="your@email.com" autocomplete="on" value="{{ old('email') ?? Cookie::get('remember_email') }}">
                     </div>
                     <div class="mb-2">
                       <label class="form-label">
@@ -66,17 +66,22 @@
                         </span> --}}
                       </label>
                       <div class="input-group input-group-flat">
-                        <input type="password" name="password" class="form-control"  placeholder="Your password"  autocomplete="off">
+                        <input type="password" id="password" name="password" class="form-control"  placeholder="Your password"  autocomplete="off">
                         <span class="input-group-text">
-                          <a href="#" class="link-secondary" title="Show password" data-bs-toggle="tooltip"><!-- Download SVG icon from http://tabler-icons.io/i/eye -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                          <a href="#" id="togglePassword" class="link-secondary" title="Show password" data-bs-toggle="tooltip">
+                              <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                                  stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                  <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                  <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                              </svg>
                           </a>
-                        </span>
+                      </span>
                       </div>
                     </div>
                     <div class="mb-2">
                       <label class="form-check">
-                        <input type="checkbox" class="form-check-input"/>
+                        <input type="checkbox" name="remember" class="form-check-input" {{ old('remember') || Cookie::get('remember_email') ? 'checked' : '' }} />
                         <span class="form-check-label">Remember me on this device</span>
                       </label>
                     </div>
@@ -100,5 +105,24 @@
     <!-- Tabler Core -->
     <script src="{{ asset('tabler/dist/js/tabler.min.js?1692870487') }}" defer></script>
     <script src="{{ asset('tabler/dist/js/demo.min.js?1692870487') }}" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          const passwordInput = document.getElementById("password");
+          const togglePassword = document.getElementById("togglePassword");
+          const eyeIcon = document.getElementById("eyeIcon");
+      
+          togglePassword.addEventListener("click", function (e) {
+              e.preventDefault();
+              if (passwordInput.type === "password") {
+                  passwordInput.type = "text";
+                  eyeIcon.innerHTML = '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M2 12c2.4 4 5.4 6 9 6c3.6 0 6.6 -2 9 -6c-2.4 -4 -5.4 -6 -9 -6c-3.6 0 -6.6 2 -9 6" /><path d="M2 2l20 20" />';
+              } else {
+                  passwordInput.type = "password";
+                  eyeIcon.innerHTML = '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />';
+              }
+          });
+      });
+      </script>
+      
   </body>
 </html>

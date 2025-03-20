@@ -158,9 +158,14 @@
                 Data Master
               </span>
             </a>
-            <div class="dropdown-menu {{ request()->is(['karyawan','departemen','pelanggan']) ? 'show' : '' }}">
+            <div class="dropdown-menu {{ request()->is(['admin','karyawan','departemen','pelanggan']) ? 'show' : '' }}">
               <div class="dropdown-menu-columns">
                 <div class="dropdown-menu-column">
+                  @if(Auth::guard('admin')->check())
+                  <a class="dropdown-item {{ request()->is(['admin']) ? 'active' : '' }}" href="/admin">
+                    Admin
+                  </a>
+                  @endif
                   <a class="dropdown-item {{ request()->is(['karyawan']) ? 'active' : '' }}" href="/karyawan">
                     Karyawan
                   </a>
