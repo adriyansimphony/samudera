@@ -38,13 +38,31 @@ class DashboardController extends Controller
         $namabulan = ["","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
 
         $rekapizin = DB::table('pengajuan_izin')
-        ->selectRaw('SUM(IF(status="i",1,0)) as jmlizin,SUM(IF(status="s",1,0)) as jmlsakit')
-        ->where('nik', $nik)
-        ->whereRaw('MONTH(tgl_izin)="'.$bulanini.'"')
-        ->whereRaw('YEAR(tgl_izin)="'.$tahunini.'"')
-        // yang dimunculin cuma yg diizinin
-        ->where('status_approved',1)
-        ->first();
+            ->selectRaw('SUM(IF(status = "i", 1, 0)) as jmlizin')
+            ->selectRaw('SUM(IF(status = "s", 1, 0)) as jmlsakit')
+            ->where('nik', $nik)
+            ->whereMonth('tgl_izin', date('m')) // Mengunci bulan berjalan (Juni) secara aman
+            ->whereYear('tgl_izin', date('Y'))  // Mengunci tahun berjalan (2026) secara aman
+            ->where('status_approved', 1)
+            ->first();
+
+        //lama
+        // $rekapizin = DB::table('pengajuan_izin')
+        // ->selectRaw('SUM(IF(status="i",1,0)) as jmlizin,SUM(IF(status="s",1,0)) as jmlsakit')
+        // ->where('nik', $nik)
+        // ->whereRaw('MONTH(tgl_izin)="'.$bulanini.'"')
+        // ->whereRaw('YEAR(tgl_izin)="'.$tahunini.'"')
+        // // yang dimunculin cuma yg diizinin
+        // ->where('status_approved',1)
+        // ->first();
+
+//         // Tulis ini tepat SEBELUM baris 'return view'
+// dd([
+//     'NIK Karyawan Login' => $nik,
+//     'Bulan Ini' => $bulanini,
+//     'Tahun Ini' => $tahunini,
+//     'Semua Data Izin Karyawan Ini' => DB::table('pengajuan_izin')->where('nik', $nik)->get()
+// ]);
 
         return view('dashboard.dashboard',compact('presensihariini', 'historibulanini', 'namabulan', 'tahunini', 'bulanini', 'rekappresensi', 'leaderboard','rekapizin'));
     }

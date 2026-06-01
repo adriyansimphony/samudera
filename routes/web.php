@@ -113,8 +113,9 @@ Route::middleware(['auth:user,admin'])->group(function (){
 });
 
 Route::middleware(['auth:admin'])->group(function (){
-        //admin
-        Route::get('/admin', [AdminController::class, 'index']);
-
+    // Admin
+    Route::get('/admin', [AdminController::class, 'index']);
+    Route::post('/admin/store', [AdminController::class, 'store']); // <-- TAMBAHKAN ROUTE BARU INI
+    Route::put('/admin/{id}/update', [AdminController::class, 'update']);
 });
 

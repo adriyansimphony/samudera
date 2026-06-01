@@ -76,6 +76,26 @@
             </select>
         </div>
     </div>
+    <div class="row mt-3">
+        <div class="col-12">
+            <label class="form-check">
+                <input class="form-check-input" type="checkbox" name="ubah_password" id="ubah_password" value="1">
+                <span class="form-check-label">Apakah Anda ingin mengubah password?</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="row mt-2" id="field_password" style="display: none;">
+        <div class="col-12">
+            <div class="input-icon mb-3">
+                <span class="input-icon-addon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /><path d="M12 16m0 1a1 1 0 0 1 1 -1h0a1 1 0 0 1 1 1v1a1 1 0 0 1 -1 1h0a1 1 0 0 1 -1 -1z" /><path d="M8 11v-4a4 4 0 0 1 8 0v4" /></svg>
+                </span>
+                <input type="password" id="password" class="form-control" name="password" placeholder="Masukkan Password Baru">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
     <div class="row mt-2">
         <div class="col-12">
             <div class="form-group">
@@ -87,3 +107,19 @@
         </div>
     </div>
 </form>
+
+<script>
+    document.getElementById('ubah_password').addEventListener('change', function() {
+        const fieldPassword = document.getElementById('field_password');
+        const inputPassword = document.getElementById('password');
+        
+        if (this.checked) {
+            fieldPassword.style.display = 'block'; // Munculkan field
+            inputPassword.setAttribute('required', 'required'); // Wajib diisi kalau dicentang
+        } else {
+            fieldPassword.style.display = 'none';  // Sembunyikan field
+            inputPassword.removeAttribute('required'); // Tidak wajib diisi
+            inputPassword.value = ''; // Reset isian password jika batal dicentang
+        }
+    });
+</script>

@@ -218,7 +218,10 @@
             <div class="col-3">
                 <div class="card">
                     <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem">
-                        <span class="badge bg-danger" style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekapizin->jmlizin }}</span>
+                        <span class="badge bg-danger" style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">
+                        {{ $rekapizin->jmlizin ?? 0 }}
+                    </span>
+                        {{-- <span class="badge bg-danger" style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekapizin->jmlizin }}</span> --}}
                         <ion-icon name="clipboard-outline" style="font-size: 1.6rem;" class="text-success mb-1"></ion-icon>
                         <br>
                         <span style="font-size: 0.8rem; font-weight: 500">Izin</span>
@@ -228,7 +231,10 @@
             <div class="col-3">
                 <div class="card">
                     <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem">
-                        <span class="badge bg-danger" style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekapizin->jmlsakit }}</span>
+                        <span class="badge bg-danger" style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">
+                            {{ !empty($rekapizin->jmlsakit) ? $rekapizin->jmlsakit : 0 }}
+                        </span>
+                        {{-- <span class="badge bg-danger" style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekapizin->jmlsakit }}</span> --}}
                         <ion-icon name="medkit-outline" style="font-size: 1.6rem;" class="text-warning mb-1"></ion-icon>                        <br>
                         <span style="font-size: 0.8rem; font-weight: 500">Sakit</span>
                     </div>
@@ -391,7 +397,12 @@
                     @foreach ($leaderboard as $d)
                     <li>
                         <div class="item">
-                            <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image">
+                            @if (!empty($d->foto))
+                            <img src="{{ Storage::url('uploads/karyawan/' . $d->foto) }}" alt="Foto {{ $d->nama_lengkap }}" class="image" style="object-fit: cover;">
+                        @else
+                            <img src="{{ asset('assets/img/sample/avatar/avatar1.jpg') }}" alt="Default Image" class="image">
+                        @endif
+                            {{-- <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image"> --}}
                             <div class="in">
                                 <div>
                                     <b>{{ $d->nama_lengkap }}</b><br>
